@@ -47,8 +47,9 @@ class StoreRepository extends BaseRepository
 
         if(isset($input['image']))
         {
-            $uploud_resize =     Resize($input['image'],'store',350,150); // return file name
-            $input['image'] = $uploud_resize;
+            $upload_resize =  Resize($input['image'],'store',350,200); // return file name
+             (!$upload_resize) ?  $input['image'] = null : $input['image'] = $upload_resize;
+
         }
         $model = $this->model->newInstance($input);
 

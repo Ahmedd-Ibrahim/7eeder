@@ -8,11 +8,13 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+
 use Response;
+
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -151,8 +153,10 @@ class UserAPIController extends AppBaseController
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        $user = User::where('phone',$request->phone)->get();
-        $data = [$user,'token'=>$token];
+//        $user = User::where('phone',$request->phone)->get();
+//        $data = ['user' => $user,'token'=>$token];
+        $user = User::where('phone',$request->phone)->first();
+        $data = [$user,['token'=>$token]];
         return $this->sendResponse($data, 'User crossed successfully');
 //        return response()->json(compact('token'));
     }
@@ -224,6 +228,14 @@ class UserAPIController extends AppBaseController
         $token = ['token'=>jwtAuth::fromUser($user)];
         $data = [$user,$token];
         return $this->sendResponse( $data,'error');
-    }
+
+    } // End of set password
+
+    public function logout()
+    {
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json(['message' => 'Successfully logged out']);
+
+    } // End of logout
 
 }

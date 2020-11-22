@@ -56,7 +56,6 @@ class StoreController extends AppBaseController
     {
         $input = $request->all();
 
-
         $store = $this->storeRepository->create($input);
 
         Flash::success('Store saved successfully.');

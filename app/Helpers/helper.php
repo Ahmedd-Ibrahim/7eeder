@@ -16,5 +16,4 @@ function Resize($imageFile,$path_to_save,$width,$hight)
     $image_resize->resize($width, $hight);
     $image_resize->save(public_path('/images/'. $path_to_save.'/' .$filename));
     return $path_to_save . '/' . $filename;
-
 }

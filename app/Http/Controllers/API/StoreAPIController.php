@@ -45,7 +45,12 @@ class StoreAPIController extends AppBaseController
             $request->get('limit')
         );
 
-        return $this->sendResponse(StoreResource::collection(Store::all()), 'Stores retrieved successfully');
+       $storeData = Store::paginate(3);
+       $success = true;
+       $message = 'Stores retrieved successfully';
+//StoreResource::collection(Store::all())
+        return response()->json(compact('success','storeData','message'),200);
+//        return $this->sendResponse( $storeData , 'Stores retrieved successfully');
     }
 
     /**
@@ -59,20 +64,9 @@ class StoreAPIController extends AppBaseController
     public function store(CreateStoreAPIRequest $request)
     {
         $input = $request->all();
-
-        $vaildation = Validator::make($request->all(),[
-           'name' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-//            'active' => 'required',
-            'user_id' => 'required',
-        ]);
-        if($vaildation->fails())
-        {
-            return $this->sendError('Store not found');
-        }
+        $user = JWTAuth::parseToken()->authenticate();
         $input['active'] ='active'; // default active
-
+        $input['user_id'] = $user->id;
         $store = $this->storeRepository->create($input);
         return $this->sendResponse($store->toArray(), 'Store saved successfully');
     }
@@ -148,14 +142,34 @@ class StoreAPIController extends AppBaseController
         /** @var Store $store */
         $store = $this->storeRepository->find($id);
 
-        if (empty($store)) {
+        if (empty($store))
+        {
             return $this->sendError('Store not found');
         }
 
-        $store->delete();
+        if($user = JWTAuth::parseToken()->authenticate())
+        {
+            if ($user->id != $store->user_id )
+            {
+                return $this->sendError('You Are Not The Owner Of This Store');
+            }
 
-        return $this->sendSuccess('Store deleted successfully');
-    }
+            $store->delete();
+            return $this->sendSuccess('Store deleted successfully');
+        }
+
+        return $this->sendError('You do not have Auth login First');
+
+    } // End of delete
 
 
+    public function myOwnStore()
+    {
+        if($user = JWTAuth::parseToken()->authenticate())
+        {
+            $myOwnStore =  $user->OwnStores()->paginate(3);
+            return $this->sendResponse($myOwnStore, 'Own Store retrieved successfully');
+        }
+        return $this->sendError('You do not have Auth login First');
+    } // End of myOwnStore
 }

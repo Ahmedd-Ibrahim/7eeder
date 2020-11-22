@@ -52,5 +52,19 @@ class UserRepository extends BaseRepository
         return $model;
     }
 
+    public function update($input, $id)
+    {
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        $password = Hash::make($input['password']);
+        $input['password'] = $password;
+        $model->fill($input);
+
+        $model->save();
+
+        return $model;
+    }
 
 }

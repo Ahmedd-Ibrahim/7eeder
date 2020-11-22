@@ -62,7 +62,8 @@ class Store extends Model
         'phone' => 'required',
         'address' => 'required',
 //        'active' => 'required',
-        'user_id' => 'required'
+//        'user_id' => 'required',
+        'image' => 'mimes:jpeg,jpg,png|size:10000'
     ];
 
 
@@ -84,10 +85,17 @@ class Store extends Model
     public function MeetTypes(){
         return $this->hasMany(MeetTypes::class, 'store_id');
     }
-    public function Users()
+
+    public function Users()  // Favourite
     {
         return $this->belongsToMany(User::class,'user_store');
     }
+
+    public function User()  // Owner of this store
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
     public function UserViews()
     {
         return $this->belongsToMany(User::class,'user_store_view');

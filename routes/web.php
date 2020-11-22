@@ -42,7 +42,6 @@ Route::group(['middleware'=>'user.role:admin'],function (){
 }); // End of Infyom Routes
 
 
-
 Route::group(['middleware'=>'auth'],function (){
 
     Route::resource('stores', 'StoreController');
@@ -56,7 +55,6 @@ Route::group(['middleware'=>'auth'],function (){
     Route::resource('userStores', 'UserStoreController');
 
     Route::resource('appSettings', 'AppSettingController');
-
 
 });
 

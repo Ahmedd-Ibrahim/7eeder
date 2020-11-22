@@ -62,7 +62,11 @@ class UserStoreAPIController extends AppBaseController
         $input = $request->all();
         $user = JWTAuth::parseToken()->authenticate();
         $input['user_id'] = $user->id;
-        $store = Store::findOrFail( $input['store_id']);
+        $store = Store::find( $input['store_id']);
+        if(!$store)
+        {
+            return $this->sendError('Store not found check store ID');
+        }
         $userStore = $this->userStoreRepository->create($input);
         return $this->sendResponse($store, 'User Store saved successfully');
     }

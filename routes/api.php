@@ -28,12 +28,14 @@ Route::group([
     Route::post('login', 'UserAPIController@authenticate');
     Route::post('forget-password', 'UserAPIController@forgetPassword');
     Route::post('set-password', 'UserAPIController@setPassword');
-
+    Route::post('logout', 'UserAPIController@logout')->middleware('jwt.verify');
 });
 
 Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::resource('stores', 'StoreAPIController');
+
+    Route::get('my-own-stores', 'StoreAPIController@myOwnStore');
 
     Route::resource('meet_types', 'MeetTypesAPIController');
 
@@ -44,8 +46,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::resource('user_stores', 'UserStoreAPIController');
 
     Route::resource('app_settings', 'AppSettingAPIController');
-
 });
+
 Route::get('settings/about', 'AppSettingAPIController@about');
 Route::get('settings/term', 'AppSettingAPIController@term');
 Route::get('settings/condation', 'AppSettingAPIController@appCondation');

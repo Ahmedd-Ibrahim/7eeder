@@ -56,15 +56,20 @@ class User extends Model
      * @var array
      */
     public static $rules = [
-
-        'email' => 'email|unique:users',
-        'phone' => 'required|unique:users',
+        'email' => 'sometimes|unique:users,email,',
+        'phone' => 'required|unique:users,phone,',
         'name' => 'required',
         'password' => 'required',
     ];
+
     public function Stores() // Favourite
     {
         return $this->belongsToMany(Store::class,'user_store');
+    }
+
+    public function OwnStores()
+    {
+        return $this->hasMany(Store::class,'user_id');
     }
 
     public function StoreViews()
