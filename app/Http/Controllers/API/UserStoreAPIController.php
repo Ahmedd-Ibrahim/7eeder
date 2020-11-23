@@ -44,8 +44,17 @@ class UserStoreAPIController extends AppBaseController
         );
 
         $user = JWTAuth::parseToken()->authenticate();
+        if(!$user)
+        {
+            return $this->sendError('login in first');
+
+        }
+
         $stores =  $user->Stores()->paginate(10);  // favourite Stores
-        return $this->sendResponse($stores, 'User Stores retrieved successfully');
+        $success = true;
+        $message = 'Stores retrieved successfully';
+        return response()->json(compact('success','stores','message'),200);
+//        return $this->sendResponse($stores, 'User Stores retrieved successfully');
     }
 
     /**

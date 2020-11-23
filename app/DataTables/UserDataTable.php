@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\User;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -42,7 +43,7 @@ class UserDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false])
+            ->addAction(['width' => '120px', 'printable' => false, 'title' => __('datatables_buttons.action')])
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
@@ -65,11 +66,11 @@ class UserDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'name',
-            'phone',
-            'role' => ['searchable' => true],
-            'created_at' => ['searchable' => false],
-            'updated_at' => ['searchable' => false]
+            'name' =>  new Column(['title' => __('users.name:'), 'data' => 'name']),
+            'phone' =>  new Column(['title' => __('users.phone:'), 'data' => 'phone']),
+            'role' =>  new Column(['title' => __('users.role:'), 'data' => 'role', 'searchable' => true]),
+            'created_at' => new Column(['title' => __('users.created_at:'), 'data' => 'created_at', 'searchable' => false]),
+            'updated_at' => new Column(['title' => __('users.updated_at:'), 'data' => 'updated_at', 'searchable' => false])
         ];
     }
 

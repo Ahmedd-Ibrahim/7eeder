@@ -13,13 +13,46 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group([ // Languages
+
+    'prefix' => LaravelLocalization::setLocale(),
+	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+
+], function()
+{     /** ADD ALL LOCALIZED ROUTES INSIDE THIS GROUP **/
+
+Route::get('test',function (){
+   return  LaravelLocalization::getCurrentLocaleDirection();
+
+});
+    Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
+
+    Route::group(['middleware'=>'auth'],function (){
+
+        Route::resource('stores', 'StoreController');
+
+        Route::resource('meetTypes', 'MeetTypesController');
+
+        Route::resource('complaints', 'ComplaintController');
+
+        Route::resource('users', 'UserController');
+
+        Route::resource('userStores', 'UserStoreController');
+
+        Route::resource('appSettings', 'AppSettingController');
+
+    });
+
+
+}); // End languages
+
 Route::get('/', function () {
     return view('welcome');
 });
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->middleware('verified');
+
 
 // Infyom Routes
 Route::group(['middleware'=>'user.role:admin'],function (){
@@ -42,19 +75,5 @@ Route::group(['middleware'=>'user.role:admin'],function (){
 }); // End of Infyom Routes
 
 
-Route::group(['middleware'=>'auth'],function (){
 
-    Route::resource('stores', 'StoreController');
-
-    Route::resource('meetTypes', 'MeetTypesController');
-
-    Route::resource('complaints', 'ComplaintController');
-
-    Route::resource('users', 'UserController');
-
-    Route::resource('userStores', 'UserStoreController');
-
-    Route::resource('appSettings', 'AppSettingController');
-
-});
 

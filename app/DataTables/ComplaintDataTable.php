@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Complaint;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -42,7 +43,7 @@ class ComplaintDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false])
+            ->addAction(['width' => '120px', 'printable' => false,'title' => __('datatables_buttons.action')])
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
@@ -65,9 +66,9 @@ class ComplaintDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'name',
-            'phone',
-            'message'
+            'name' => new Column(['title' => __('complaint.name:'), 'data' => 'name']),
+            'phone' => new Column(['title' => __('complaint.phone:'), 'data' => 'phone']),
+            'message' => new Column(['title' => __('complaint.message:'), 'data' => 'message'])
         ];
     }
 

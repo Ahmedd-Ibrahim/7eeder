@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\API\CreateStoreAPIRequest;
 use App\Http\Requests\API\UpdateStoreAPIRequest;
 use App\Http\Resources\StoreResource;
+use App\Models\MeetTypes;
 use App\Models\Store;
 use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
@@ -96,7 +97,7 @@ class StoreAPIController extends AppBaseController
             $storeToView->save();
         }
         /* / Counter */
-        $data = Store::with('MeetTypes')->find($storeToView->id);
+        $data = Store::find($storeToView->id);
 //        $data->toArray()
 
         return $this->sendResponse($data, 'Store retrieved successfully');
@@ -172,4 +173,21 @@ class StoreAPIController extends AppBaseController
         }
         return $this->sendError('You do not have Auth login First');
     } // End of myOwnStore
+
+    /* get meet types of any store on different request*/
+
+    public function meetTypes($id)
+    {
+        $store = Store::find($id);
+        if(!$store)
+        {
+            return $this->sendError('The store not found');
+
+        }
+
+        $meetTypes = $store->MeetTypes()->paginate(3);
+        $success = true;
+        $message = 'Stores retrieved successfully';
+        return response()->json(compact('success','meetTypes','message'),200);
+    }
 }

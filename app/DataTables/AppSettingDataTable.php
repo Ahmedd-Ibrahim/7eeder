@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\AppSetting;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -42,7 +43,7 @@ class AppSettingDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false])
+            ->addAction(['width' => '120px', 'printable' => false,'title' => __('datatables_buttons.action')])
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
@@ -65,11 +66,11 @@ class AppSettingDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'about_desc',
-            'term_desc',
-            'condation_desc',
-            'app_share_link',
-            'app_review_link'
+            'about_desc' =>  new Column(['title' => __('settings.About Desc:'), 'data' => 'about_desc']),
+            'term_desc' => new Column(['title' => __('settings.Term Desc:'), 'data' => 'term_desc']),
+            'condation_desc' => new Column(['title' => __('settings.condition Desc:'), 'data' => 'condation_desc']),
+            'app_share_link' => new Column(['title' => __('settings.App Share Link:'), 'data' => 'app_share_link']) ,
+            'app_review_link' => new Column(['title' => __('settings.App Review Link:'), 'data' => 'app_review_link']) ,
         ];
     }
 

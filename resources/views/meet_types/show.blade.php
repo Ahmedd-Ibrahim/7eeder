@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Meet Types
+            @lang('meet.Meet Types')
         </h1>
     </section>
     <div class="content">

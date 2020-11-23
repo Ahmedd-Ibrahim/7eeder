@@ -34,7 +34,7 @@ Route::group([
 Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::resource('stores', 'StoreAPIController');
-
+    Route::get('stores-meet-types/{id}', 'StoreAPIController@meettypes');  /* get meet types of any store on different request*/
     Route::get('my-own-stores', 'StoreAPIController@myOwnStore');
 
     Route::resource('meet_types', 'MeetTypesAPIController');

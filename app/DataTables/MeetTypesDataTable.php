@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\MeetTypes;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -42,7 +43,7 @@ class MeetTypesDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false])
+            ->addAction(['width' => '120px', 'printable' => false,'title' => __('datatables_buttons.action')])
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
@@ -65,10 +66,10 @@ class MeetTypesDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'image',
-            'meet_type',
-            'slaughter_date',
-            'age'
+            'image' =>  new Column(['title' => __('meet.image:'), 'data' => 'image']),
+            'meet_type' =>  new Column(['title' => __('meet.Meet Types'), 'data' => 'meet_type']),
+            'slaughter_date' =>  new Column(['title' => __('meet.Slaughter Date:'), 'data' => 'slaughter_date']),
+            'age' => new Column(['title' => __('meet.age:'), 'data' => 'age'])
         ];
     }
 
