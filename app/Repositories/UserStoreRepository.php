@@ -42,11 +42,12 @@ class UserStoreRepository extends BaseRepository
 
     public function create($input)
     {
-
         $store = Store::findOrFail($input['store_id']);
         $user = User::findOrFail($input['user_id']);
         $user->Stores()->syncWithoutDetaching($store);
         $model = $user->Stores();
         return $model;
-    }
+    } // end of create
+
+
 }

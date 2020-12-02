@@ -85,7 +85,8 @@ class UserAPIController extends AppBaseController
         /** @var User $user */
         $user = $this->userRepository->find($id);
 
-        if (empty($user)) {
+        if (empty($user))
+        {
             return $this->sendError('User not found');
         }
 
@@ -153,8 +154,7 @@ class UserAPIController extends AppBaseController
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-//        $user = User::where('phone',$request->phone)->get();
-//        $data = ['user' => $user,'token'=>$token];
+
         $user = User::where('phone',$request->phone)->first();
         $data = [$user,['token'=>$token]];
         return $this->sendResponse($data, 'User crossed successfully');
@@ -194,7 +194,7 @@ class UserAPIController extends AppBaseController
         {
             return $this->sendResponse('exists','success');
         } else{
-            return $this->sendResponse('not exists','error');
+            return $this->sendError('User not found');
 
         }
 
@@ -202,32 +202,35 @@ class UserAPIController extends AppBaseController
 
     public function setPassword(Request $request)
     {
+
+        $vaild = Validator::make($request->all(),[
+            'phone' => 'required',
+            'password' => 'required|min:4'
+        ]);
+        if($vaild->fails())
+        {
+            return response()->json(['error' => 'fill all felds'], 400);
+        }
+        // the token is valid and we have found the user via the sub claim
+        $user = User::where('phone',$request->phone)->first();
+
+        if(!$user)
+        {
+            return response()->json(['error' => 'Phone Number not match'], 400);
+        }
+        $user->update(['password'=>bcrypt($request->password)]);
+        $credentials = $request->only('phone', 'password');
+
         try {
-
-            if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['user_not_found'], 404);
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'invalid_credentials'], 400);
             }
-
-        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-            return response()->json(['token_expired'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-            return response()->json(['token_invalid'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-            return response()->json(['token_absent'], $e->getStatusCode());
-
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        // the token is valid and we have found the user via the sub claim
-
-        $user->update(['password'=>bcrypt($request->password)]);
-        $token = ['token'=>jwtAuth::fromUser($user)];
-        $data = [$user,$token];
-        return $this->sendResponse( $data,'error');
+        $data = [$user,['token'=>$token]];
+        return $this->sendResponse($data, 'User crossed successfully');
 
     } // End of set password
 

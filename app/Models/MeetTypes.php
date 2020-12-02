@@ -18,6 +18,8 @@ class MeetTypes extends Model
 
     public $table = 'meet_types';
 
+    protected $photoRealPath;
+
     public $fillable = [
         'image',
         'slaughter_date',
@@ -47,15 +49,27 @@ class MeetTypes extends Model
      * @var array
      */
     public static $rules = [
-        'slaughter_date' => 'required',
+        'slaughter_date' => 'required|date',
         'age' => 'required',
         'meet_type' => 'required',
-        'store_id' => 'required'
+//        'store_id' => 'required'
     ];
 
-    public function getImageAttribute($val){
+    public function getPhotoRealPath()
+    {
+        return $this->photoRealPath;
+    }
+
+    public function getSlaughterDateAttribute($val)
+    {
+        return $val;
+    }
+    public function getImageAttribute($val)
+    {
         if(isset($val))
         {
+            $this->photoRealPath = $val;
+
             return asset('images/'. $val) ;
         }
         return asset('images/logo.jpg');;

@@ -59,7 +59,7 @@ class MeetTypesAPIController extends AppBaseController
 
         $meetTypes = $this->meetTypesRepository->create($input);
 
-        return $this->sendResponse($meetTypes->toArray(), 'Meet Types saved successfully');
+        return $this->sendResponse($meetTypes, 'Meet Types saved successfully');
     }
 
     /**
@@ -98,13 +98,14 @@ class MeetTypesAPIController extends AppBaseController
         /** @var MeetTypes $meetTypes */
         $meetTypes = $this->meetTypesRepository->find($id);
 
-        if (empty($meetTypes)) {
+        if (empty($meetTypes))
+        {
             return $this->sendError('Meet Types not found');
         }
 
         $meetTypes = $this->meetTypesRepository->update($input, $id);
 
-        return $this->sendResponse($meetTypes->toArray(), 'MeetTypes updated successfully');
+        return $this->sendResponse($meetTypes, 'MeetTypes updated successfully');
     }
 
     /**
@@ -126,7 +127,7 @@ class MeetTypesAPIController extends AppBaseController
             return $this->sendError('Meet Types not found');
         }
 
-        $meetTypes->delete();
+        $this->meetTypesRepository->delete($id);
 
         return $this->sendSuccess('Meet Types deleted successfully');
     }

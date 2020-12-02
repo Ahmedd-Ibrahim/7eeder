@@ -31,11 +31,12 @@ Route::group([
     Route::post('logout', 'UserAPIController@logout')->middleware('jwt.verify');
 });
 
-Route::group(['middleware' => ['jwt.verify']], function() {
-
+Route::group(['middleware' => ['jwt.verify']], function()
+{
     Route::resource('stores', 'StoreAPIController');
     Route::get('stores-meet-types/{id}', 'StoreAPIController@meettypes');  /* get meet types of any store on different request*/
     Route::get('my-own-stores', 'StoreAPIController@myOwnStore');
+    Route::patch('store-deactivate/{id}', 'StoreAPIController@deactivate'); // Deactivate the store
 
     Route::resource('meet_types', 'MeetTypesAPIController');
 
@@ -47,6 +48,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::resource('app_settings', 'AppSettingAPIController');
 });
+
+Route::resource('stores', 'StoreAPIController'); // Guest no Auth on home page
+Route::get('stores-meet-types/{id}', 'StoreAPIController@meettypes');  // meetTypes for Guest
 
 Route::get('settings/about', 'AppSettingAPIController@about');
 Route::get('settings/term', 'AppSettingAPIController@term');

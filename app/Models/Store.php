@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Eloquent as Model;
 
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+
 /**
  * Class Store
  * @package App\Models
@@ -22,9 +26,11 @@ class Store extends Model
 
     public $table = 'stores';
 
+    protected $hidden = ['pivot','users'];
 
+    protected $appends = ['favorite'];
 
-    protected $hidden = ['pivot'];
+    protected $photoRealPath;
 
     public $fillable = [
         'name',
@@ -33,7 +39,8 @@ class Store extends Model
         'image',
         'views',
         'active',
-        'user_id'
+        'user_id',
+        'favorite'
     ];
 
     /**
@@ -63,18 +70,51 @@ class Store extends Model
         'address' => 'required',
 //        'active' => 'required',
 //        'user_id' => 'required',
-        'image' => 'mimes:jpeg,jpg,png|size:10000'
+        'image' => 'mimes:jpeg,jpg,png'
     ];
 
+    public function getPhotoRealPath()
+    {
+        return $this->photoRealPath;
+    }
 
     public function getImageAttribute($val){
         if(isset($val))
         {
+            $this->photoRealPath = $val;
             return asset('images/'. $val);
         }
-        return asset('images/logo.jpg');;
+
+        return asset('images/logo.jpg');
 
     }
+
+    public function getFavoriteAttribute()
+    {
+
+        if(auth()->guard('api')->user())
+        {
+            $user = Auth::user() ?? JWTAuth::parseToken()->authenticate();
+            if($user)
+            {
+                // if this store id exists in store ids relation [favourite relation ]
+                $userStores = $user->Stores()->find($this->id);
+                if($userStores)
+                {
+                    return true;
+                }else{
+                    return false;
+                }
+
+            } // End of if auth
+            else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+
+    } // End of favourite attr
 
     /* Begin Relations */
     public function Complaint(){

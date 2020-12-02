@@ -21,10 +21,6 @@ Route::group([ // Languages
 ], function()
 {     /** ADD ALL LOCALIZED ROUTES INSIDE THIS GROUP **/
 
-Route::get('test',function (){
-   return  LaravelLocalization::getCurrentLocaleDirection();
-
-});
     Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
 
     Route::group(['middleware'=>'auth'],function (){
@@ -43,7 +39,6 @@ Route::get('test',function (){
 
     });
 
-
 }); // End languages
 
 Route::get('/', function () {
@@ -51,8 +46,6 @@ Route::get('/', function () {
 });
 
 Auth::routes(['verify' => true]);
-
-
 
 // Infyom Routes
 Route::group(['middleware'=>'user.role:admin'],function (){
@@ -73,7 +66,3 @@ Route::group(['middleware'=>'user.role:admin'],function (){
     )->name('io_generator_builder_generate_from_file');
 
 }); // End of Infyom Routes
-
-
-
-

@@ -28,7 +28,7 @@ class StoreAPIController extends AppBaseController
     public function __construct(StoreRepository $storeRepo)
     {
         $this->storeRepository = $storeRepo;
-        $this->middleware('user.role:admin-moderator',['except'=>['index','show']]);
+        $this->middleware('user.role:admin-moderator',['only'=>['update','store','destroy','deactivate']]);
     }
 
     /**
@@ -45,11 +45,9 @@ class StoreAPIController extends AppBaseController
             $request->get('skip'),
             $request->get('limit')
         );
-
-       $storeData = Store::paginate(3);
-       $success = true;
-       $message = 'Stores retrieved successfully';
-//StoreResource::collection(Store::all())
+        $storeData = [Store::where('active','active')->paginate(10)];
+        $success = true;
+        $message = 'Stores retrieved successfully';
         return response()->json(compact('success','storeData','message'),200);
 //        return $this->sendResponse( $storeData , 'Stores retrieved successfully');
     }
@@ -90,15 +88,20 @@ class StoreAPIController extends AppBaseController
         }
 
         /* Counter */
-        if ($user = JWTAuth::parseToken()->authenticate())
+        if(auth()->guard('api')->user())
         {
-            $storeToView->UserViews()->syncWithoutDetaching($user);
-            $storeToView->views = count($storeToView->UserViews);
-            $storeToView->save();
+            $user = JWTAuth::parseToken()->authenticate();
+            if($user)
+            {
+                $storeToView->UserViews()->syncWithoutDetaching($user);
+                $storeToView->views = count($storeToView->UserViews);
+                $storeToView->save();
+            }
         }
+
         /* / Counter */
         $data = Store::find($storeToView->id);
-//        $data->toArray()
+
 
         return $this->sendResponse($data, 'Store retrieved successfully');
     }
@@ -155,7 +158,8 @@ class StoreAPIController extends AppBaseController
                 return $this->sendError('You Are Not The Owner Of This Store');
             }
 
-            $store->delete();
+           $this->storeRepository->delete($id);
+
             return $this->sendSuccess('Store deleted successfully');
         }
 
@@ -168,8 +172,10 @@ class StoreAPIController extends AppBaseController
     {
         if($user = JWTAuth::parseToken()->authenticate())
         {
-            $myOwnStore =  $user->OwnStores()->paginate(3);
-            return $this->sendResponse($myOwnStore, 'Own Store retrieved successfully');
+            $myOwnStore =  [$user->OwnStores()->paginate(10)];
+            $success = true;
+            $message = 'My own Stores retrieved successfully';
+            return response()->json(compact('success','myOwnStore','message'),200);
         }
         return $this->sendError('You do not have Auth login First');
     } // End of myOwnStore
@@ -185,9 +191,23 @@ class StoreAPIController extends AppBaseController
 
         }
 
-        $meetTypes = $store->MeetTypes()->paginate(3);
+        $meetTypes = $store->MeetTypes()->paginate(10);
         $success = true;
         $message = 'Stores retrieved successfully';
         return response()->json(compact('success','meetTypes','message'),200);
-    }
+    } // End of meetTypes
+
+    public function deactivate($id)
+    {
+        $store = Store::find($id);
+        if(!$store)
+        {
+            return $this->sendError('The store not found');
+
+        }
+        $store->update(['active'=>'deactivate']);
+        $success = true;
+        $message = 'Stores Deactivate successfully';
+        return response()->json(compact('success','message'),200);
+    } // End of deactivate
 }

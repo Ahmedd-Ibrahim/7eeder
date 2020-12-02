@@ -50,7 +50,7 @@ class UserStoreAPIController extends AppBaseController
 
         }
 
-        $stores =  $user->Stores()->paginate(10);  // favourite Stores
+        $stores =  [$user->Stores()->paginate(10)];  // favourite Stores
         $success = true;
         $message = 'Stores retrieved successfully';
         return response()->json(compact('success','stores','message'),200);
@@ -138,12 +138,24 @@ class UserStoreAPIController extends AppBaseController
     public function destroy($id)
     {
         /** @var UserStore $userStore */
-        $userStore = $this->userStoreRepository->find($id);
+        $userStore = Store::find($id);
 
         if (empty($userStore)) {
-            return $this->sendError('User Store not found');
+            return $this->sendError('Store not found!');
         }
-        $userStore->delete();
-        return $this->sendSuccess('User Store deleted successfully');
+
+        if($user = JWTAuth::parseToken()->authenticate())
+        {
+            $userStoreFavourite = $user->Stores()->find($id); // find this store in user favourite
+            if(! $userStoreFavourite)
+            {
+                return $this->sendError('The User Never favourite this Store');
+            }
+
+            $user->Stores()->detach($userStore);
+            return $this->sendSuccess('User Store deleted successfully');
+        } // End of if user Auth
+
+        return $this->sendError('You need to login to use favourite future');
     }
 }

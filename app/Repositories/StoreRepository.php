@@ -56,5 +56,19 @@ class StoreRepository extends BaseRepository
         $model->save();
 
         return $model;
-    }
+    } // End of create
+
+    public function delete($id)
+    {
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        if(isset($model->image) && $model->getPhotoRealPath() != null)
+        {
+            RemoveImageFromDisk($model->getPhotoRealPath());
+        }
+
+        return $model->delete();
+    } // End of delete
 }
