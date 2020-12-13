@@ -28,7 +28,7 @@ class StoreAPIController extends AppBaseController
     public function __construct(StoreRepository $storeRepo)
     {
         $this->storeRepository = $storeRepo;
-        $this->middleware('user.role:admin-moderator',['only'=>['update','store','destroy','deactivate']]);
+        $this->middleware('user.role:admin-moderator',['only'=>['deactivate']]);
     }
 
     /**
@@ -210,4 +210,31 @@ class StoreAPIController extends AppBaseController
         $message = 'Stores Deactivate successfully';
         return response()->json(compact('success','message'),200);
     } // End of deactivate
+
+    public function storeUpdate(UpdateStoreAPIRequest $request, $id)
+    {
+        $inputs = $request->all();
+        $store = Store::find($id);
+
+        if(!$store)
+        {
+            return $this->sendError(' Store Not Found');
+        }
+
+
+        if (isset($inputs['image']))
+        {
+            RemoveImageFromDisk($store->getPhotoRealPath());
+
+            $upload_resize =  Resize($inputs['image'],'store',350,200); // return file name
+
+            (!$upload_resize) ?  $inputs['image'] = null : $inputs['image'] = $upload_resize;
+
+        }
+
+        $storeUpdated =  $store->update($inputs);
+
+        return $this->sendResponse($storeUpdated, 'Store updated successfully');
+
+    }
 }

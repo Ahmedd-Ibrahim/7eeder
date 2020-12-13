@@ -70,7 +70,7 @@ class Store extends Model
         'address' => 'required',
 //        'active' => 'required',
 //        'user_id' => 'required',
-        'image' => 'mimes:jpeg,jpg,png'
+        'image' => 'mimes:jpeg,jpg,png|sometimes'
     ];
 
     public function getPhotoRealPath()

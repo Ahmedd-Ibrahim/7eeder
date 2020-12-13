@@ -57,7 +57,18 @@ class StoreRepository extends BaseRepository
 
         return $model;
     } // End of create
+    public function update($input, $id)
+    {
+        $query = $this->model->newQuery();
 
+        $model = $query->findOrFail($id);
+
+        $model->fill($input);
+
+        $model->save();
+
+        return $model;
+    }
     public function delete($id)
     {
         $query = $this->model->newQuery();
@@ -71,4 +82,25 @@ class StoreRepository extends BaseRepository
 
         return $model->delete();
     } // End of delete
+
+    public function storeUpdate($request,$id)
+    {
+        $inputs = $request->all();
+        $store = Store::find($id);
+        if(!$store)
+        {
+            return 'store not found!';
+        }
+
+        if (isset($inputs['image']))
+        {
+            RemoveImageFromDisk($store->getPhotoRealPath());
+
+            $upload_resize =  Resize($inputs['image'],'store',350,200); // return file name
+
+            (!$upload_resize) ?  $inputs['image'] = null : $inputs['image'] = $upload_resize;
+
+        }
+        return $store->update($inputs);
+    }
 }

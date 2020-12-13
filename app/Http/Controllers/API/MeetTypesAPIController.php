@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateMeetTypesAPIRequest;
 use App\Http\Requests\API\UpdateMeetTypesAPIRequest;
+use App\Http\Requests\API\UpdateStoreAPIRequest;
 use App\Models\MeetTypes;
+use App\Models\Store;
 use App\Repositories\MeetTypesRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
@@ -130,5 +132,32 @@ class MeetTypesAPIController extends AppBaseController
         $this->meetTypesRepository->delete($id);
 
         return $this->sendSuccess('Meet Types deleted successfully');
+    }
+
+    public function meetUpdate(UpdateMeetTypesAPIRequest $request, $id)
+    {
+        $inputs = $request->all();
+        $store = MeetTypes::find($id);
+
+        if(!$store)
+        {
+            return $this->sendError(' Store Not Found');
+        }
+
+
+        if (isset($inputs['image']))
+        {
+            RemoveImageFromDisk($store->getPhotoRealPath());
+
+            $upload_resize =  Resize($inputs['image'],'store',350,200); // return file name
+
+            (!$upload_resize) ?  $inputs['image'] = null : $inputs['image'] = $upload_resize;
+
+        }
+
+        $storeUpdated =  $store->update($inputs);
+
+        return $this->sendResponse($storeUpdated, 'Store updated successfully');
+
     }
 }

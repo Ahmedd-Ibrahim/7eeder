@@ -34,11 +34,17 @@ Route::group([
 Route::group(['middleware' => ['jwt.verify']], function()
 {
     Route::resource('stores', 'StoreAPIController');
+
+    Route::Post('stores/update/{id}', 'StoreAPIController@storeUpdate');
+
     Route::get('stores-meet-types/{id}', 'StoreAPIController@meettypes');  /* get meet types of any store on different request*/
+
     Route::get('my-own-stores', 'StoreAPIController@myOwnStore');
+
     Route::patch('store-deactivate/{id}', 'StoreAPIController@deactivate'); // Deactivate the store
 
     Route::resource('meet_types', 'MeetTypesAPIController');
+    Route::post('meet_types/update/{id}', 'MeetTypesAPIController@meetUpdate');
 
     Route::resource('complaints', 'ComplaintAPIController');
 
