@@ -21,11 +21,14 @@ class UpdateMeetTypesAPIRequest extends APIRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     *
      */
     public function rules()
     {
         $rules = MeetTypes::$rules;
-        
+        $rules['slaughter_date'] = 'sometimes';
+        $rules['age'] = 'sometimes';
+        $rules['meet_type'] = 'sometimes';
         return $rules;
     }
 }

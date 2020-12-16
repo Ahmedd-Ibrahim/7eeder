@@ -34,7 +34,6 @@ Route::group([
 Route::group(['middleware' => ['jwt.verify']], function()
 {
     Route::resource('stores', 'StoreAPIController');
-
     Route::Post('stores/update/{id}', 'StoreAPIController@storeUpdate');
 
     Route::get('stores-meet-types/{id}', 'StoreAPIController@meettypes');  /* get meet types of any store on different request*/

@@ -21,11 +21,16 @@ class UpdateStoreAPIRequest extends APIRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     *
      */
     public function rules()
     {
         $rules = Store::$rules;
-        
+        $rules['name'] = 'sometimes';
+        $rules['phone'] = 'sometimes';
+        $rules['address'] = 'sometimes';
+        $rules['active'] = 'sometimes';
+        $rules['image'] = 'sometimes';
         return $rules;
     }
 }

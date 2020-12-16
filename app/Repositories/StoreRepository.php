@@ -85,7 +85,7 @@ class StoreRepository extends BaseRepository
 
     public function storeUpdate($request,$id)
     {
-        $inputs = $request->all();
+        $inputs = $request;
         $store = Store::find($id);
         if(!$store)
         {
