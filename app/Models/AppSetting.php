@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * Class AppSetting
@@ -18,13 +19,14 @@ use Eloquent as Model;
 class AppSetting extends Model
 {
 
+    use HasTranslations;
+
     public $table = 'app_settings';
-    
 
-
+    public $translatable = ['about','term_desc','condation_desc'];
 
     public $fillable = [
-        'about_desc',
+        'about',
         'term_desc',
         'condation_desc',
         'app_share_link',
@@ -48,8 +50,7 @@ class AppSetting extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
-    
 }

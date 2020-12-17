@@ -16,7 +16,7 @@ class CreateAppSettingsTable extends Migration
     {
         Schema::create('app_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->longText('about_desc')->nullable();
+            $table->longText('about')->nullable();
             $table->longText('term_desc')->nullable();
             $table->longText('condation_desc')->nullable();
             $table->text('app_share_link')->nullable();

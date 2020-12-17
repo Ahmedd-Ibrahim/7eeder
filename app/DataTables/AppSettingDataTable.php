@@ -19,7 +19,14 @@ class AppSettingDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'app_settings.datatables_actions');
+        return $dataTable->addColumn('action', 'app_settings.datatables_actions')
+            ->editColumn('about', function ($q) {
+                return $q->getTranslation('about', \App::getLocale());
+            })->editColumn('term_desc', function ($q) {
+                return $q->getTranslation('term_desc', \App::getLocale());
+            })->editColumn('condation_desc', function ($q) {
+                return $q->getTranslation('condation_desc', \App::getLocale());
+            });
     }
 
     /**
@@ -66,7 +73,7 @@ class AppSettingDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'about_desc' =>  new Column(['title' => __('settings.About Desc:'), 'data' => 'about_desc']),
+            'about' =>  new Column(['title' => __('settings.About Desc:'), 'data' => 'about']),
             'term_desc' => new Column(['title' => __('settings.Term Desc:'), 'data' => 'term_desc']),
             'condation_desc' => new Column(['title' => __('settings.condition Desc:'), 'data' => 'condation_desc']),
             'app_share_link' => new Column(['title' => __('settings.App Share Link:'), 'data' => 'app_share_link']) ,

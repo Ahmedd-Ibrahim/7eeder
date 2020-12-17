@@ -96,7 +96,7 @@ class StoreRepository extends BaseRepository
         {
             RemoveImageFromDisk($store->getPhotoRealPath());
 
-            $upload_resize =  Resize($inputs['image'],'store',350,200); // return file name
+            $upload_resize =  Resize($inputs['image'],'store',350,130); // return file name
 
             (!$upload_resize) ?  $inputs['image'] = null : $inputs['image'] = $upload_resize;
 

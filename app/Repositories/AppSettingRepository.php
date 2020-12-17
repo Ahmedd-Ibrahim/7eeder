@@ -17,7 +17,7 @@ class AppSettingRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'about_desc',
+        'about',
         'term_desc',
         'condation_desc',
         'app_share_link',
@@ -41,4 +41,59 @@ class AppSettingRepository extends BaseRepository
     {
         return AppSetting::class;
     }
+
+    public function create($input)
+    {
+
+        $model = $this->model->newInstance($input);
+
+        $about = [
+            'en' => $input['about'],
+            'ar' => $input['about_ar']
+        ];
+        $condation = [
+            'en' => $input['condation_desc'],
+            'ar' => $input['condation_desc_ar']
+        ];
+        $term_desc = [
+            'en' => $input['term_desc'],
+            'ar' => $input['term_desc_ar']
+        ];
+        $model->setTranslations('about', $about);
+        $model->setTranslations('condation_desc', $condation);
+        $model->setTranslations('term_desc', $term_desc);
+        $model->save();
+
+        return $model;
+    }
+
+    public function update($input, $id)
+    {
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        $model->fill($input);
+
+        $about = [
+            'en' => $input['about'],
+            'ar' => $input['about_ar']
+        ];
+        $condation = [
+            'en' => $input['condation_desc'],
+            'ar' => $input['condation_desc_ar']
+        ];
+        $term_desc = [
+            'en' => $input['term_desc'],
+            'ar' => $input['term_desc_ar']
+        ];
+
+        $model->setTranslations('about', $about);
+        $model->setTranslations('condation_desc', $condation);
+        $model->setTranslations('term_desc', $term_desc);
+        $model->save();
+
+        return $model;
+    }
+
 }

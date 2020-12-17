@@ -19,7 +19,7 @@
 <!-- About Desc Field -->
 <div class="form-group">
     {{ Form::label('about_desc',__('settings.About Desc:'),[],false) }}
-    <p>{{ $appSetting->about_desc }}</p>
+    <p>{{ $appSetting->about }}</p>
 </div>
 
 <!-- Term Desc Field -->

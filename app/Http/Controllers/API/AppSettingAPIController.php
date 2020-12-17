@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateAppSettingAPIRequest;
 use App\Http\Requests\API\UpdateAppSettingAPIRequest;
+use App\Http\Resources\AboutResource;
+use App\Http\Resources\CondationResource;
+use App\Http\Resources\TermsResource;
 use App\Models\AppSetting;
 use App\Repositories\AppSettingRepository;
 use Illuminate\Http\Request;
@@ -133,11 +136,11 @@ class AppSettingAPIController extends AppBaseController
     public function about()
     {
         try {
-            $about = AppSetting::first()->about_desc;
-            return $this->sendResponse($about, 'AppSetting updated successfully');
+            $about = AppSetting::first();
+            return $this->sendResponse(new AboutResource($about), 'AppSetting updated successfully');
         } catch (\ Exception $e)
         {
-            return $this->sendResponse('under Update', 'AppSetting about not found');
+            return $this->sendError( 'AppSetting about not found');
         }
 
     } // End of about
@@ -145,8 +148,8 @@ class AppSettingAPIController extends AppBaseController
     public function term()
     {
         try {
-            $term = AppSetting::first()->term_desc;
-            return $this->sendResponse($term, 'AppSetting updated successfully');
+            $term = AppSetting::first();
+            return $this->sendResponse(new TermsResource($term), 'AppSetting updated successfully');
         } catch (\ Exception $e)
         {
             return $this->sendResponse('under Update', 'AppSetting term not found');
@@ -157,8 +160,8 @@ class AppSettingAPIController extends AppBaseController
     public function appCondation()
     {
         try {
-            $condation = AppSetting::first()->condation_desc;
-            return $this->sendResponse($condation, 'AppSetting updated successfully');
+            $condation = AppSetting::first();
+            return $this->sendResponse(new CondationResource($condation), 'AppSetting updated successfully');
         } catch (\ Exception $e)
         {
             return $this->sendResponse('under Update', 'AppSetting condation not found');
